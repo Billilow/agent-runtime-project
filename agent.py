@@ -5,20 +5,22 @@ from google import genai
 from google.genai import types
 from calculator import calculator_declaration, calculator
 from crypto_price import get_crypto_price, crypto_declaration
+from websearch import web_search, websearch_declaration
 
 TOOL_REGISTRY = {
     "calculator_tool": calculator,
-    "crypto_price_tool": get_crypto_price
+    "crypto_price_tool": get_crypto_price,
+    "web_search_tool": web_search
 }
 
 
 client = genai.Client()
 
-tool = types.Tool(function_declarations=[calculator_declaration, crypto_declaration])
+tool = types.Tool(function_declarations=[calculator_declaration, crypto_declaration, websearch_declaration])
 config = types.GenerateContentConfig(tools=[tool])
 
 contents = [
-    types.Content(role="user", parts=[types.Part(text="what is the current price of bitcoin?")])
+    types.Content(role="user", parts=[types.Part(text="오늘 비트코인 관련 최신 뉴스 헤드라인 알려줘")])
 ]
 
 
@@ -35,6 +37,7 @@ while True:
         break
 
     elif part.function_call is not None:
+        print(f"[tool has called: {part.function_call.name}]")  # To check whether the tool has been called or not
         tool_name = part.function_call.name
         tool_args = dict(part.function_call.args)
 
