@@ -2,20 +2,30 @@ import os
 import requests
 from calculator import ToolExecutionError
 from dotenv import load_dotenv
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 load_dotenv()
+
+@retry(
+    retry=retry_if_exception_type(requests.exceptions.RequestException),
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=1,max=8),
+    reraise=True
+)
+def _fetch_web_result(query: str, max_results: int=3) -> dict:
+    api_key = os.getenv("TAVILY_API_KEY")
+
+    response = requests.post(
+        "https://api.tavily.com/search",
+        headers={"Authorization": f"Bearer {api_key}"},
+        json={"query": query, "max_results": max_results}
+    )
+
+    response.raise_for_status()
+    return response.json()
 
 def web_search(query: str, max_results: int=3) -> dict:
     try:
-     api_key = os.getenv("TAVILY_API_KEY")
-
-     response = requests.post(
-         "https://api.tavily.com/search",
-         headers={"Authorization": f"Bearer {api_key}"},
-         json={"query": query, "max_results": max_results}
-     )
-
-     response.raise_for_status()
-     data = response.json()
+     data = _fetch_web_result(query, max_results)
 
      simplified_results = [
          {"title": r["title"], "url": r["url"], "content": r["content"]}
