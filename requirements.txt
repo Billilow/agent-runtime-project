@@ -1,5 +1,6 @@
-anthropic
 requests
 tenacity
 python-dotenv
 pytest
+google-genai==2.24.0
+crewai==1.15.23
