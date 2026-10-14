@@ -13,12 +13,12 @@ def required_calculator_use(output: TaskOutput):
 llm = LLM(model="gemini/gemini-3.1-flash-lite")
 
 researcher = Agent(
-    role="Crypto Market Researcher",       # 이 에이전트의 직책/역할
-    goal="Collect accurate, up-to-date price data and news about a given cryptocurrency",       # 이 에이전트가 달성해야 할 목표
+    role="Crypto Market Researcher",       # Role of this agent
+    goal="Collect accurate, up-to-date price data and news about a given cryptocurrency",       # goals the agent should achieve
     backstory="You are a high-speed crypto investigative journalist and news archivist. Your primary focus is capturing breaking news, regulatory changes, protocol upgrades, and macroeconomic shifts impacting the crypto market. You cross-check multiple authoritative web sources, prioritize the absolute newest information, and explicitly flag the timestamp or source reliability of each piece of data.",  # 배경 설정 (역할에 맞게 행동하도록 유도하는 설명)
-    tools=[crypto_price_tool, websearch_tool],      # 이 에이전트가 쓸 수 있는 도구들
+    tools=[crypto_price_tool, websearch_tool],      # tools that the agent could use
     llm=llm,
-    verbose=True      # 에이전트의 사고/도구 호출 과정을 화면에 출력 (개발 중엔 켜두는 게 좋아요)
+    verbose=True
 )
 
 research_task = Task(
@@ -59,7 +59,7 @@ analysis_task = Task(
              "Do not add facts that are not in the inputs. "
              "Mark any item whose time is relative (e.g. 'about 2 hours ago') or 'not available' as time-uncertain. "
              "Flag claims with weak support and say why.",
-    expected_output="1. 가격 비교: 현재 가격과 뉴스에 나온 각 가격대의 차이 (Calculator로 계산한 값) \n 2. 뉴스 묶음: 공통 주제별로 묶은 항목 \n 3. 확실/불확실: 불확실한 항목은 이유도 함께 (예: 날짜 없음)",
+    expected_output="1. Price Comparison: The difference between the current price and each price point mentioned in the news (calculated via Calculator). \n 2. News Grouping: Items categorized and grouped by common themes. \n 3. Certainty Status: For uncertain items, include the reasoning (e.g., Missing date)",
     agent=analyst,
     context=[research_task, calc_task]   # Researcher의 결과를 이 Task의 입력으로 연결
 )
@@ -96,4 +96,4 @@ if __name__ == "__main__":
     CALCULATOR_CALLS.clear()
     result = crew.kickoff(inputs={"topic": "bitcoin"})
     print(result)
-    print("Calculator 실제 호출 기록: ", CALCULATOR_CALLS)
+    print("Actual record of calling the Calculator: ", CALCULATOR_CALLS)

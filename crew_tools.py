@@ -7,8 +7,8 @@ CALCULATOR_CALLS = []
 
 @tool("Calculator")
 def calculator_tool(expression: str) -> str:
-    '''사칙연산 수식을 계산합니다.
-    괄호와 연산자 우선순위를 지원합니다.'''
+    '''Calculates arithmetic expressions,
+    supporting parentheses and operator precedence.'''
 
     result = calculator(expression)
     CALCULATOR_CALLS.append(result)

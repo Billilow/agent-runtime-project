@@ -65,7 +65,7 @@ calculator_declaration = {
 
 if __name__ == '__main__':
     if __name__ == '__main__':
-        print(calculator("2 + 3 * 4"))  # 정상 -> {'expression': ..., 'result': 14}
+        print(calculator("2 + 3 * 4"))  # Success -> {'expression': ..., 'result': 14}
 
         try:
             calculator("1/0")

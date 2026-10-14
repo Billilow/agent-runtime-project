@@ -5,7 +5,7 @@ class CircuitBreaker:
         self.failure_threshold = failure_threshold
         self.cooldown_seconds = cooldown_seconds
         self.failures = {} #{tool_name: how many times it failed consecutively}
-        self.open_until = {} #{tool_name: 차단이 풀리는 시각}
+        self.open_until = {}
 
     def is_open(self, tool_name):
         if self.open_until.get(tool_name, 0) > time.time():

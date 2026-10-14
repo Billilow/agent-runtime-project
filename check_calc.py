@@ -24,4 +24,4 @@ crew = Crew(agents=[agent], tasks=[task], verbose=True)
 
 if __name__ == "__main__":
     crew.kickoff()
-    print("호출 기록:", CALCULATOR_CALLS)
+    print("Calling Rec:", CALCULATOR_CALLS)
